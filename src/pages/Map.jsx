@@ -162,7 +162,7 @@ function Map() {
                             />
                         </div>
                     ))}
-                    <button onClick={checkAnswers}>Submit All Answers</button>
+                    <button class="button is-success" onClick={checkAnswers}>Submit All Answers</button>
                 </div>
             )}
 
