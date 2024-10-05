@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/css/bulma.min.css';
+import useWindowDimensions from './UseWindowDimensions';
 import { useParams } from 'react-router';
 
 function QuizPage() {
@@ -10,7 +11,7 @@ function QuizPage() {
     const [score, setScore] = useState(0);
     const [userAnswer, setUserAnswer] = useState('');
     const [quizStart, setQuizStart] = useState(false)
-
+    const [widthLarger, setWidthLarger] = useState(false);
     const generateQuestion = async () => {
         if (questions.length >= 10) return; // Limit to 10 questions
 
@@ -82,10 +83,17 @@ function QuizPage() {
        
     };
 
+    const { width } = useWindowDimensions();
+    console.log(width);
+    useEffect(() => {
+       
+        setWidthLarger(width > 640);
+    }, [width])
+
 
     return (
         <div className="container is-flex is-justify-content-center is-align-items-center" style={{ minHeight: '100vh', backgroundColor: '#FFF4EA' }}>
-            <div className="box has-text-centered" style={{ width: '50%', backgroundColor: '#FADFA1', borderRadius: '15px', padding: '2rem' }}>
+            <div className="box has-text-centered" style={{ width: widthLarger ? '50%':'90%', backgroundColor: '#FADFA1', borderRadius: '15px', padding: '2rem' }}>
                 <div className="title is-3" style={{ color: '#C96868' }}>Blast off into the quiz, {userName}!</div>
 
                 <form className="input-container" onSubmit={handleSubmit}>
