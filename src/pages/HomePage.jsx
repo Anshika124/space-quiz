@@ -38,9 +38,17 @@ function HomePage() {
               <Link
                   className="button is-link is-large is-rounded"
                   to={`/quizpage/${userName}`}
+                  style={{ backgroundColor: '#FADFA1', color: '#C96868', marginTop: '2rem', }}
+              >
+                  Start Space Trivia →
+              </Link>
+              <br/>
+              <Link
+                  className="button is-link is-large is-rounded"
+                  to={`/map`}
                   style={{ backgroundColor: '#FADFA1', color: '#C96868', marginTop: '2rem' }}
               >
-                  Start Quiz →
+                    GeoExplorer Quiz →
               </Link>
           </div>
 

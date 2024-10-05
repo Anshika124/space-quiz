@@ -1,10 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import 'bulma/css/bulma.min.css';
-import useWindowDimensions from './UseWindowDimensions';
+import Loader from '../component/Loader';
 import { useParams } from 'react-router';
+import useWindowDimensions from '../component/UseWindowDimensions';
 
 function QuizPage() {
+    const { width } = useWindowDimensions();
+    useEffect(() => {
+        setWidthLarger(width > 640);
+    }, [width])
     const { userName } = useParams();
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -12,10 +17,16 @@ function QuizPage() {
     const [userAnswer, setUserAnswer] = useState('');
     const [quizStart, setQuizStart] = useState(false)
     const [widthLarger, setWidthLarger] = useState(false);
+    const [loader, setLoader] = useState(false);
+
+    if (loader) {
+        return <Loader />
+    }
     const generateQuestion = async () => {
         if (questions.length >= 10) return; // Limit to 10 questions
 
         try {
+            setLoader(true);
             const response = await axios({
                 url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw`,
                 method: "post",
@@ -43,7 +54,7 @@ function QuizPage() {
                     ],
                 },
             });
-
+            setLoader(false)
             const botResponse = JSON.parse(response.data.candidates[0].content.parts[0].text);
             setQuestions((prevQuestions) => [...prevQuestions, botResponse]);
         } catch (error) {
@@ -83,12 +94,8 @@ function QuizPage() {
        
     };
 
-    const { width } = useWindowDimensions();
-    console.log(width);
-    useEffect(() => {
-       
-        setWidthLarger(width > 640);
-    }, [width])
+    
+   
 
 
     return (
@@ -112,7 +119,7 @@ function QuizPage() {
                     <div className="quiz-container mt-5">
                         <div className="box" style={{ backgroundColor: '#FFAD60', borderRadius: '12px' }}>
                             <h2 className="question-title title is-5" style={{ color: '#FFF4EA' }}>
-                                {questions[currentQuestionIndex].question}
+                                {'('+(currentQuestionIndex+1)+')'}  {questions[currentQuestionIndex].question}
                             </h2>
                             <div className="buttons is-centered">
                                 {Object.keys(questions[currentQuestionIndex].options).map((option) => (
