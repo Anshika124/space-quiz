@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/space-quiz/static/css/main.a6d640cf.css",
+    "main.js": "/space-quiz/static/js/main.1d9c646a.js",
+    "index.html": "/space-quiz/index.html",
+    "main.a6d640cf.css.map": "/space-quiz/static/css/main.a6d640cf.css.map",
+    "main.1d9c646a.js.map": "/space-quiz/static/js/main.1d9c646a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a6d640cf.css",
+    "static/js/main.1d9c646a.js"
+  ]
+}
