@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import customMarker from '../assets/custom-marker.png'; 
+import customMarker from '../assets/custom-marker.png';
 import axios from 'axios';
 
 const GEMINI_API_KEY = 'AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw'; // Replace with your Gemini API key
@@ -19,8 +19,8 @@ function Map() {
         shadowUrl: require('leaflet/dist/images/marker-shadow.png'), // Optional: default shadow image
         shadowSize: [41, 41], // Size of the shadow
         shadowAnchor: [12, 41], // Anchor point of the shadow
-      });
-    
+    });
+
     // Define a set of 25 locations with associated questions
     const locations = [
         { id: 1, name: 'Eiffel Tower, Paris', position: [48.8584, 2.2941] },
@@ -138,6 +138,7 @@ function Map() {
             <div className="hero-body">
                 <div className="container has-text-centered">
                     <h1 className="title has-text-white">Map-Based Geospatial Quiz</h1>
+                    <p className="subtitle has-text-white">Click on any given region to get quiz questions for that location.</p>
                     <div className="box">
                         <MapContainer center={[20, 0]} zoom={2} style={{ height: '500px', width: '100%' }}>
                             <TileLayer
@@ -160,45 +161,44 @@ function Map() {
                             <div className="quiz-section">
                                 <h2 className="subtitle has-text-white">Quiz Questions</h2>
                                 {questions.map((question, index) => (
-                                                                        <div key={index} className="field">
-                                                                        <p className="is-size-3 is-family-monospace">{question}</p>
-                                                                        <div className="control">
-                                                                            <input
-                                                                                className="input"
-                                                                                type="text"
-                                                                                value={answers[index]}
-                                                                                onChange={(e) => {
-                                                                                    const newAnswers = [...answers];
-                                                                                    newAnswers[index] = e.target.value;
-                                                                                    setAnswers(newAnswers);
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                                <div className="control">
-                                                                    <button className="button is-link" onClick={checkAnswers}>
-                                                                        Submit Answers
-                                                                    </button>
-                                                                </div>
-                                                                {feedback && (
-                                                                    <div className="notification is-info">
-                                                                        <h3 className="subtitle has-text-white">Feedback:</h3>
-                                                                        <ul>
-                                                                            {feedback.map((feedbackItem, index) => (
-                                                                                <li key={index} className="has-text-white">{`Q${index + 1}: ${feedbackItem}`}</li>
-                                                                            ))}
-                                                                        </ul>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </section>
-                                    );
-                                }
-                                
-                                export default Map;
-                                
+                                    <div key={index} className="field">
+                                        <p className="is-size-3 is-family-monospace">{question}</p>
+                                        <div className="control">
+                                            <input
+                                                className="input"
+                                                type="text"
+                                                value={answers[index]}
+                                                onChange={(e) => {
+                                                    const newAnswers = [...answers];
+                                                    newAnswers[index] = e.target.value;
+                                                    setAnswers(newAnswers);
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                                <div className="control">
+                                    <button className="button is-link" onClick={checkAnswers}>
+                                        Submit Answers
+                                    </button>
+                                </div>
+                                {feedback && (
+                                    <div className="notification is-info">
+                                        <h3 className="subtitle has-text-white">Feedback:</h3>
+                                        <ul>
+                                            {feedback.map((feedbackItem, index) => (
+                                                <li key={index} className="has-text-white">{`Q${index + 1}: ${feedbackItem}`}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+export default Map;
