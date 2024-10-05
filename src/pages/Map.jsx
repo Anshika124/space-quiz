@@ -20,8 +20,7 @@ function Map() {
         shadowSize: [41, 41], // Size of the shadow
         shadowAnchor: [12, 41], // Anchor point of the shadow
       });
-      
-
+    
     // Define a set of 25 locations with associated questions
     const locations = [
         { id: 1, name: 'Eiffel Tower, Paris', position: [48.8584, 2.2941] },
@@ -135,69 +134,71 @@ function Map() {
     };
 
     return (
-        <>
-        <div class="block">            <p class="is-size-2 has-text-centered is-capitalized has-text-weight-bold">Map-Based Geospatial Quiz</p>
-        </div>
-        <div class="block">
-            <MapContainer center={[20, 0]} zoom={2} style={{ height: '500px', width: '100%' }}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-
-                {/* Add markers dynamically from locations array */}
-                {locations.map((location) => (
-                    <Marker key={location.id} icon={customIcon} position={location.position} eventHandlers={{ click: () => handleMarkerClick(location) }}>
-                        <Popup>
-                            <strong>{location.name}</strong>
-                            <br />
-                            Click to generate quiz questions about this location.
-                        </Popup>
-                    </Marker>
-                ))}
-            </MapContainer>
-                </div>
-                <div class="block">
-            {/* Display all questions */}
-            {questions.length > 0 && (
-                <div className="quiz-section" class="block">
-                    <p class="is-size-3 has-text-weight-semibold">Quiz Questions:</p>
-                    {questions.map((question, index) => (
-                        <div key={index} class="control">
-                            <p class="is-size-3 is-family-monospace">{question}</p>
-                            <input
-                                class="input is-success"
-                                type="text"
-                                width="40%"
-                                value={answers[index]}
-                                onChange={(e) => {
-                                    const newAnswers = [...answers];
-                                    newAnswers[index] = e.target.value;
-                                    setAnswers(newAnswers);
-                                }}
-                                placeholder="Your answer..."
+        <section className="hero is-fullheight" style={{ background: 'linear-gradient(to right, #ff7e5f, #feb47b)' }}>
+            <div className="hero-body">
+                <div className="container has-text-centered">
+                    <h1 className="title has-text-white">Map-Based Geospatial Quiz</h1>
+                    <div className="box">
+                        <MapContainer center={[20, 0]} zoom={2} style={{ height: '500px', width: '100%' }}>
+                            <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             />
-                        </div>
-                    ))}
-                    
-
-                    <button class="button is-success block button is-success is-hovered button is-success is-focused button is-success is-active" padding-top="10px" onClick={checkAnswers}>Submit All Answers</button>
-                </div>
-            )}
-</div>
-<div class="block">
-            {/* Display feedback after validation */}
-            {feedback.length > 0 && (
-                <div className="feedback-section" class="block">
-                    <h3>Feedback:</h3>
-                    {feedback.map((fb, index) => (
-                        <p key={index}>{index + 1}. {fb}</p>
-                    ))}
-                </div>
-            )}
-            </div>
-        </>
-    );
-}
-
-export default Map;
+                            {locations.map((location) => (
+                                <Marker key={location.id} icon={customIcon} position={location.position} eventHandlers={{ click: () => handleMarkerClick(location) }}>
+                                    <Popup>
+                                        <strong>{location.name}</strong>
+                                        <br />
+                                        Click to generate quiz questions about this location.
+                                    </Popup>
+                                </Marker>
+                            ))}
+                        </MapContainer>
+                    </div>
+                    <div className="box">
+                        {questions.length > 0 && (
+                            <div className="quiz-section">
+                                <h2 className="subtitle has-text-white">Quiz Questions</h2>
+                                {questions.map((question, index) => (
+                                                                        <div key={index} className="field">
+                                                                        <p className="is-size-3 is-family-monospace">{question}</p>
+                                                                        <div className="control">
+                                                                            <input
+                                                                                className="input"
+                                                                                type="text"
+                                                                                value={answers[index]}
+                                                                                onChange={(e) => {
+                                                                                    const newAnswers = [...answers];
+                                                                                    newAnswers[index] = e.target.value;
+                                                                                    setAnswers(newAnswers);
+                                                                                }}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                                <div className="control">
+                                                                    <button className="button is-link" onClick={checkAnswers}>
+                                                                        Submit Answers
+                                                                    </button>
+                                                                </div>
+                                                                {feedback && (
+                                                                    <div className="notification is-info">
+                                                                        <h3 className="subtitle has-text-white">Feedback:</h3>
+                                                                        <ul>
+                                                                            {feedback.map((feedbackItem, index) => (
+                                                                                <li key={index} className="has-text-white">{`Q${index + 1}: ${feedbackItem}`}</li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    );
+                                }
+                                
+                                export default Map;
+                                
