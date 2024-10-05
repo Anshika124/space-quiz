@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import customMarker from '../assets/custom-marker.png'; 
 import axios from 'axios';
 
 const GEMINI_API_KEY = 'AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw'; // Replace with your Gemini API key
@@ -9,6 +11,16 @@ function Map() {
     const [questions, setQuestions] = useState([]); // Store the questions
     const [answers, setAnswers] = useState(Array(10).fill('')); // User's answers for all questions
     const [feedback, setFeedback] = useState(''); // Feedback for the answer
+    const customIcon = new L.Icon({
+        iconUrl: customMarker, // Use the imported image path
+        iconSize: [38, 38], // Size of the icon [width, height]
+        iconAnchor: [19, 38], // Anchor point of the icon (usually half of iconSize to center it)
+        popupAnchor: [0, -38], // Popup position relative to the iconAnchor
+        shadowUrl: require('leaflet/dist/images/marker-shadow.png'), // Optional: default shadow image
+        shadowSize: [41, 41], // Size of the shadow
+        shadowAnchor: [12, 41], // Anchor point of the shadow
+      });
+      
 
     // Define a set of 25 locations with associated questions
     const locations = [
@@ -123,8 +135,10 @@ function Map() {
     };
 
     return (
-        <div className="App">
-            <h1>Map-Based Geospatial Quiz</h1>
+        <>
+        <div class="block">            <p class="is-size-2 has-text-centered is-capitalized has-text-weight-bold">Map-Based Geospatial Quiz</p>
+        </div>
+        <div class="block">
             <MapContainer center={[20, 0]} zoom={2} style={{ height: '500px', width: '100%' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -133,7 +147,7 @@ function Map() {
 
                 {/* Add markers dynamically from locations array */}
                 {locations.map((location) => (
-                    <Marker key={location.id} position={location.position} eventHandlers={{ click: () => handleMarkerClick(location) }}>
+                    <Marker key={location.id} icon={customIcon} position={location.position} eventHandlers={{ click: () => handleMarkerClick(location) }}>
                         <Popup>
                             <strong>{location.name}</strong>
                             <br />
@@ -142,16 +156,19 @@ function Map() {
                     </Marker>
                 ))}
             </MapContainer>
-
+                </div>
+                <div class="block">
             {/* Display all questions */}
             {questions.length > 0 && (
-                <div className="quiz-section">
-                    <h2>Quiz Questions:</h2>
+                <div className="quiz-section" class="block">
+                    <p class="is-size-3 has-text-weight-semibold">Quiz Questions:</p>
                     {questions.map((question, index) => (
-                        <div key={index}>
-                            <p>{index + 1}. {question}</p>
+                        <div key={index} class="control">
+                            <p class="is-size-3 is-family-monospace">{question}</p>
                             <input
+                                class="input is-success"
                                 type="text"
+                                width="40%"
                                 value={answers[index]}
                                 onChange={(e) => {
                                     const newAnswers = [...answers];
@@ -162,20 +179,24 @@ function Map() {
                             />
                         </div>
                     ))}
-                    <button class="button is-success" onClick={checkAnswers}>Submit All Answers</button>
+                    
+
+                    <button class="button is-success block button is-success is-hovered button is-success is-focused button is-success is-active" padding-top="10px" onClick={checkAnswers}>Submit All Answers</button>
                 </div>
             )}
-
+</div>
+<div class="block">
             {/* Display feedback after validation */}
             {feedback.length > 0 && (
-                <div className="feedback-section">
+                <div className="feedback-section" class="block">
                     <h3>Feedback:</h3>
                     {feedback.map((fb, index) => (
                         <p key={index}>{index + 1}. {fb}</p>
                     ))}
                 </div>
             )}
-        </div>
+            </div>
+        </>
     );
 }
 
