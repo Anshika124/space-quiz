@@ -5,7 +5,7 @@ import L from 'leaflet';
 import customMarker from '../assets/custom-marker.png';
 import axios from 'axios';
 
-const GEMINI_API_KEY = 'AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw'; // Replace with your Gemini API key
+const GEMINI_API_KEY = 'AIzaSyAS04iZ2BcleJiewIdLaEkiGKzglpCh6wg'; // Replace with your Gemini API key
 
 function Map() {
     const [questions, setQuestions] = useState([]); // Store the questions
