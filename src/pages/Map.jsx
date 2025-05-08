@@ -5,7 +5,7 @@ import L from 'leaflet';
 import customMarker from '../assets/custom-marker.png';
 import axios from 'axios';
 
-const GEMINI_API_KEY = 'AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw'; // Replace with your Gemini API key
+
 
 function Map() {
     const [questions, setQuestions] = useState([]); // Store the questions
@@ -21,6 +21,7 @@ function Map() {
         shadowAnchor: [12, 41], // Anchor point of the shadow
     });
 
+    const apiKey = process.env.GEMINI_API_KEY;
     // Define a set of 25 locations with associated questions
     const locations = [
         { id: 1, name: 'Eiffel Tower, Paris', position: [48.8584, 2.2941] },
@@ -59,7 +60,7 @@ function Map() {
         const prompt = `Generate 10 quiz questions about ${location.name}.`;
         try {
             const response = await axios({
-                url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+                url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
                 method: "post",
                 data: {
                     contents: [
@@ -103,7 +104,7 @@ function Map() {
 
             try {
                 const response = await axios({
-                    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
+                    url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
                     method: "post",
                     data: {
                         contents: [
@@ -159,12 +160,12 @@ function Map() {
                     <div className="box">
                         {questions.length > 0 && (
                             <div className="quiz-section">
-                                <h2 className="subtitle has-text-white">Quiz Questions</h2>
+                                <h3 className="">Quiz Questions</h3>
                                 {questions.map((question, index) => (
                                     <div key={index} className="field">
-                                        <p className="is-size-3 is-family-monospace">{question}</p>
+                                        <p className="is-size-6 is-family-monospace">{question}</p>
                                         <div className="control">
-                                            <input
+                                            {/* <input
                                                 className="input"
                                                 type="text"
                                                 value={answers[index]}
@@ -173,7 +174,7 @@ function Map() {
                                                     newAnswers[index] = e.target.value;
                                                     setAnswers(newAnswers);
                                                 }}
-                                            />
+                                            /> */}
                                         </div>
                                     </div>
                                 ))}

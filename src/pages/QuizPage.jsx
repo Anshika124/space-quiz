@@ -19,16 +19,39 @@ function QuizPage() {
     const [widthLarger, setWidthLarger] = useState(false);
     const [loader, setLoader] = useState(false);
 
+    // Track when to restart
+    const [restartFlag, setRestartFlag] = useState(false);
+
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+
+
+    useEffect(() => {
+        if (restartFlag) {
+            generateQuestion();         
+            setRestartFlag(false);     
+        }
+    }, [restartFlag]);
+
+
     if (loader) {
         return <Loader />
     }
     const generateQuestion = async () => {
-        if (questions.length >= 10) return; // Limit to 10 questions
+
+        console.log(questions);
+
+        if (questions.length >= 10)
+        {
+             return; 
+        }
+        const randomHint = ["Mars Rovers", "Solar Flares", "Astronaut Training", "space discovery"," planetary data"," space weather"," astronaut records", "curiosity rover", "titan", "galaxy", "black hole", "space time"];
+        const topicHint = randomHint[Math.floor(Math.random() * randomHint.length)];
+        const correctAnswer = Math.floor(Math.random() * 4);
 
         try {
             setLoader(true);
             const response = await axios({
-                url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAUnr7mTzp_CTLUF4Nj9QcqtON-mKvlmUw`,
+                url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
                 method: "post",
                 data: {
                     contents: [
@@ -36,26 +59,34 @@ function QuizPage() {
                             parts: [
                                 {
                                     text:
-                                        "Generate a quiz question related to space missions, planetary data, space weather, or astronaut records. Provide the response in the following JSON format with no other text:\n\n" +
-                                        "{\n" +
-                                        "  \"question\": \"[Insert question here]\",\n" +
-                                        "  \"options\": {\n" +
-                                        "    \"A\": \"[Option A]\",\n" +
-                                        "    \"B\": \"[Option B]\",\n" +
-                                        "    \"C\": \"[Option C]\",\n" +
-                                        "    \"D\": \"[Option D]\"\n" +
-                                        "  },\n" +
-                                        "  \"correct_answer\": \"Option label of the correct answer\"\n" +
-                                        "}\n\n" +
-                                        "Ensure that the question is clear, relevant to the topic, and the options are plausible."
+                                        `Generate a quiz question related to ${topicHint}. 
+Provide the response in **pure JSON only** with no markdown, no explanation, and no extra text, new questions. 
+Respond in this exact format:
+
+{
+  "question": "Your question here",
+  "options": {
+    "A": "Option A",
+    "B": "Option B",
+    "C": "Option C",
+    "D": "Option D"
+  },
+  "correct_answer": "${65+correctAnswer}"
+}
+
+IMPORTANT: Do not include any text outside this JSON object.`
                                 },
                             ],
                         },
                     ],
                 },
             });
-            setLoader(false)
-            const botResponse = JSON.parse(response.data.candidates[0].content.parts[0].text);
+            setLoader(false);
+            // console.log(response.data);
+            const rawText = response.data.candidates[0].content.parts[0].text;
+            const cleanedText = rawText.replace(/```json\n([\s\S]*?)\n```/, '$1').trim();
+            const botResponse = JSON.parse(cleanedText);
+            // const botResponse = JSON.parse(response.data.candidates[0].content.parts[0].text);
             setQuestions((prevQuestions) => [...prevQuestions, botResponse]);
         } catch (error) {
             console.error("Error in fetching response: ", error);
@@ -91,6 +122,9 @@ function QuizPage() {
         setCurrentQuestionIndex(0);  // Set back to the first question
         setScore(0);  // Reset the score
         setUserAnswer('');  // Clear any previous user answer
+        setQuestions([]);  
+        setQuizStart(true); 
+        setRestartFlag(true);    
        
     };
 
@@ -101,7 +135,7 @@ function QuizPage() {
     return (
         <div className="container is-flex is-justify-content-center is-align-items-center" style={{ minHeight: '100vh', backgroundColor: '#FFF4EA' }}>
             <div className="box has-text-centered" style={{ width: widthLarger ? '50%':'90%', backgroundColor: '#FADFA1', borderRadius: '15px', padding: '2rem' }}>
-                <div className="title is-3" style={{ color: '#C96868' }}>Blast off into the quiz, {userName}!</div>
+                <div className="title is-3" style={{ color: '#C96868' }}>QUIZ</div>
 
                 <form className="input-container" onSubmit={handleSubmit}>
                     {quizStart ? (
@@ -125,12 +159,16 @@ function QuizPage() {
                                 {Object.keys(questions[currentQuestionIndex].options).map((option) => (
                                     <button
                                         key={option}
-                                        className={`button is-outlined is-medium is-fullwidth ${userAnswer ? 'is-static' : ''}`}
+                                        className={`button is-outlined is-medium is-fullwidth ${userAnswer ? 'is-static' : ''} `}
                                         style={{
                                             margin: '0.5rem 0',
                                             borderColor: '#C96868',
                                             color: '#FFAD60',
-                                            backgroundColor: '#FADFA1'
+                                            backgroundColor: '#FADFA1',
+                                            whiteSpace: 'normal',      
+                                            wordWrap: 'break-word', 
+                                            textAlign: 'left', 
+                                            padding: '1rem'   
                                         }}
                                         onClick={() => handleAnswer(option)}
                                         disabled={userAnswer !== ''}
