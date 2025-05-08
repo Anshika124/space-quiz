@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import customMarker from '../assets/custom-marker.png';
 import axios from 'axios';
 
-
-
 function Map() {
     const [questions, setQuestions] = useState([]); // Store the questions
     const [answers, setAnswers] = useState(Array(10).fill('')); // User's answers for all questions
     const [feedback, setFeedback] = useState(''); // Feedback for the answer
+    const quizSectionRef = useRef(null); // Ref to the quiz section
+
     const customIcon = new L.Icon({
         iconUrl: customMarker, // Use the imported image path
         iconSize: [38, 38], // Size of the icon [width, height]
@@ -21,7 +21,8 @@ function Map() {
         shadowAnchor: [12, 41], // Anchor point of the shadow
     });
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+
     // Define a set of 25 locations with associated questions
     const locations = [
         { id: 1, name: 'Eiffel Tower, Paris', position: [48.8584, 2.2941] },
@@ -80,6 +81,11 @@ function Map() {
 
             const generatedQuestions = response.data.candidates[0].content.parts[0].text.split('\n'); // Split questions
             setQuestions(generatedQuestions); // Set the generated questions
+
+            // Scroll to the quiz section
+            if (quizSectionRef.current) {
+                quizSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
         } catch (error) {
             console.error("Error in fetching questions: ", error.response?.data || error.message);
         }
@@ -157,7 +163,7 @@ function Map() {
                             ))}
                         </MapContainer>
                     </div>
-                    <div className="box">
+                    <div ref={quizSectionRef} className="box">
                         {questions.length > 0 && (
                             <div className="quiz-section">
                                 <h3 className="">Quiz Questions</h3>
@@ -165,16 +171,7 @@ function Map() {
                                     <div key={index} className="field">
                                         <p className="is-size-6 is-family-monospace">{question}</p>
                                         <div className="control">
-                                            {/* <input
-                                                className="input"
-                                                type="text"
-                                                value={answers[index]}
-                                                onChange={(e) => {
-                                                    const newAnswers = [...answers];
-                                                    newAnswers[index] = e.target.value;
-                                                    setAnswers(newAnswers);
-                                                }}
-                                            /> */}
+                                            {/* Add your input for answers */}
                                         </div>
                                     </div>
                                 ))}
